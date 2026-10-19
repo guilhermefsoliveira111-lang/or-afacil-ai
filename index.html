@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrçaFácil IA — Protótipo</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#172033;--muted:#64748b;--line:#dce4ef;--blue:#2563eb;--blue2:#1d4ed8;--green:#087f5b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:#101b33;color:white;padding:26px 18px}header .wrap,main{max-width:980px;margin:auto}.brand{font-weight:800;font-size:22px;letter-spacing:-.5px}.brand span{color:#7dd3fc}header p{margin:8px 0 0;color:#d3deef;max-width:650px}
+main{padding:22px 16px 48px}.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-bottom:16px}.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 6px 20px #13264a0a}h1{font-size:clamp(25px,4vw,36px);line-height:1.1;margin:0 0 12px;letter-spacing:-1px}h2{font-size:20px;margin:0 0 14px}p{margin:8px 0;color:var(--muted)}.pill{display:inline-block;background:#e0f2fe;color:#075985;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700;margin-bottom:12px}
+ul{padding-left:20px;color:var(--muted)}li{margin:6px 0}.price{font-size:30px;font-weight:800}.small{font-size:13px;color:var(--muted)}
+label{display:block;font-size:14px;font-weight:700;margin:13px 0 6px}input,select,textarea{font:inherit;width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:11px 12px;background:white;color:var(--ink)}textarea{min-height:90px;resize:vertical}button{border:0;border-radius:10px;padding:12px 16px;font:inherit;font-weight:750;cursor:pointer}.primary{background:var(--blue);color:white}.primary:hover{background:var(--blue2)}.secondary{background:#eaf0f8;color:var(--ink)}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.result{display:none;margin-top:16px}.output{white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0;color:#243047}.notice{border-left:4px solid #f59e0b;background:#fffbeb;padding:12px 14px;border-radius:8px;color:#854d0e;font-size:13px;margin-top:14px}.footer{font-size:12px;text-align:center;color:var(--muted);padding:20px}
+@media(max-width:700px){.hero{grid-template-columns:1fr}.panel{padding:18px}header{padding:22px 16px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="brand">OrçaFácil <span>IA</span></div><p>Protótipo para organizar pedidos, preparar rascunhos de orçamento e responder clientes de assistência técnica.</p></div></header>
+<main>
+<section class="hero">
+<div class="panel">
+<span class="pill">DEMONSTRAÇÃO INTERATIVA</span>
+<h1>Menos tempo escrevendo. Mais organização no atendimento.</h1>
+<p>Preencha os dados do serviço e gere um rascunho profissional para revisar antes de enviar ao cliente.</p>
+<ul><li>Resumo do pedido</li><li>Rascunho de orçamento</li><li>Mensagem pronta para o cliente</li></ul>
+</div>
+<div class="panel">
+<h2>Plano de lançamento</h2>
+<div class="price">R$ 29<span style="font-size:15px;font-weight:600">/mês</span></div>
+<p>Preço ilustrativo para testar a procura — ainda não é uma oferta de assinatura ativa.</p>
+<div class="notice">Este arquivo é um protótipo local. Não tem IA conectada, não recebe pagamentos e não guarda os dados em um servidor.</div>
+</div>
+</section>
+<section class="panel">
+<h2>Gerar rascunho de atendimento</h2>
+<form id="quoteForm">
+<label for="tech">Nome da assistência (opcional)</label><input id="tech" placeholder="Ex.: Oficina do Computador">
+<label for="client">Nome do cliente (opcional)</label><input id="client" placeholder="Ex.: João">
+<label for="device">Equipamento</label><select id="device" required><option value="">Selecione</option><option>Notebook</option><option>Computador desktop</option><option>Impressora</option><option>Outro equipamento</option></select>
+<label for="problem">Problema relatado</label><textarea id="problem" required placeholder="Ex.: notebook fica lento e demora para iniciar"></textarea>
+<label for="service">Serviço sugerido pelo técnico (não é diagnóstico automático)</label><input id="service" required placeholder="Ex.: avaliação e limpeza interna">
+<label for="parts">Peças ou materiais (se houver)</label><input id="parts" placeholder="Ex.: SSD 480 GB; deixar em branco se não souber">
+<label for="labor">Valor da mão de obra (R$)</label><input id="labor" type="number" min="0" step="0.01" placeholder="Ex.: 120">
+<label for="partsValue">Valor das peças (R$)</label><input id="partsValue" type="number" min="0" step="0.01" placeholder="Ex.: 250">
+<label for="deadline">Prazo estimado (opcional)</label><input id="deadline" placeholder="Ex.: após avaliação, confirmar com o cliente">
+<div class="actions"><button class="primary" type="submit">Gerar rascunho</button><button class="secondary" type="reset">Limpar campos</button></div>
+</form>
+<div id="result" class="result">
+<h2 style="margin-top:22px">Rascunho gerado</h2>
+<p class="small">Revise os dados, confirme o diagnóstico e os valores antes de enviar.</p>
+<div id="summary" class="output"></div>
+<div id="message" class="output"></div>
+<div class="actions"><button class="primary" id="copyBtn" type="button">Copiar mensagem</button><button class="secondary" id="downloadBtn" type="button">Baixar rascunho (.txt)</button></div>
+</div>
+</section>
+<div class="footer">OrçaFácil IA · Protótipo demonstrativo · Não substitui avaliação técnica nem confirmação de preços.</div>
+</main>
+<script>
+const form=document.getElementById('quoteForm'), result=document.getElementById('result');
+let latestMessage='', latestSummary='';
+const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+form.addEventListener('submit',e=>{
+ e.preventDefault();
+ const tech=document.getElementById('tech').value.trim()||'Assistência técnica';
+ const client=document.getElementById('client').value.trim()||'Olá';
+ const device=document.getElementById('device').value;
+ const problem=document.getElementById('problem').value.trim();
+ const service=document.getElementById('service').value.trim();
+ const parts=document.getElementById('parts').value.trim();
+ const labor=Number(document.getElementById('labor').value||0);
+ const partsValue=Number(document.getElementById('partsValue').value||0);
+ const deadline=document.getElementById('deadline').value.trim()||'prazo a confirmar após avaliação';
+ const total=labor+partsValue;
+ latestSummary=`RESUMO DO PEDIDO\nAssistência: ${tech}\nCliente: ${client}\nEquipamento: ${device}\nProblema relatado: ${problem}\nServiço proposto pelo técnico: ${service}\nPeças/materiais: ${parts||'Não informado'}\nMão de obra: ${money(labor)}\nPeças: ${money(partsValue)}\nTotal informado: ${money(total)}\nPrazo: ${deadline}\n\nObservação: os valores e o serviço devem ser confirmados pelo profissional antes de aprovar o orçamento.`;
+ latestMessage=`Olá, ${client}!\n\nAqui é da ${tech}. Recebemos seu pedido sobre o(a) ${device.toLowerCase()}.\n\nProblema informado: ${problem}.\nServiço proposto para avaliação: ${service}.\n${parts?'Peças/materiais previstos: '+parts+'.\n':''}Valor informado para mão de obra: ${money(labor)}.\n${partsValue>0?'Valor informado das peças: '+money(partsValue)+'.\n':''}Total estimado com os valores preenchidos: ${money(total)}.\nPrazo: ${deadline}.\n\nEste é um rascunho de orçamento e depende da confirmação do diagnóstico, dos materiais, dos valores e do prazo pela assistência. Podemos confirmar os detalhes antes de iniciar o serviço?\n\nObrigado(a)!`;
+ document.getElementById('summary').textContent=latestSummary;
+ document.getElementById('message').textContent=latestMessage;
+ result.style.display='block';
+ result.scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.getElementById('copyBtn').addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText(latestMessage);document.getElementById('copyBtn').textContent='Copiado!';setTimeout(()=>document.getElementById('copyBtn').textContent='Copiar mensagem',1800)}
+ catch(e){const ta=document.createElement('textarea');ta.value=latestMessage;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();document.getElementById('copyBtn').textContent='Copiado!'}
+});
+document.getElementById('downloadBtn').addEventListener('click',()=>{
+ const blob=new Blob([latestSummary+'\n\nMENSAGEM AO CLIENTE\n'+latestMessage],{type:'text/plain;charset=utf-8'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='orcafacil-rascunho.txt';a.click();URL.revokeObjectURL(a.href);
+});
+form.addEventListener('reset',()=>{result.style.display='none';latestMessage='';latestSummary=''});
+</script>
+</body>
+</html>
